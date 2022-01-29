@@ -17,10 +17,10 @@ const validateRegisterInput = (data) => {
         errors.password = "password must be between 6 and 30 characters long"
     }
     //check the name field
-    if (isEmpty(data.name)) {
-        errors.password = "name field cannot be empty"
+    if (isEmpty(data.username)) {
+        errors.username = "name field cannot be empty"
     } else if (!validator.isLength(data.password, { min: 3, max: 15 })) {
-        errors.password = "name must be between 3 and 15 characters long"
+        errors.username = "name must be between 3 and 15 characters long"
     }
     //check the confirm password field
     if (isEmpty(data.confirmPassword)) {

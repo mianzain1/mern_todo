@@ -4,8 +4,11 @@ const app = express();
 const mongoose = require("mongoose")
 const authRoute = require("./routes/auth")
 const PORT = process.env.PORT || 4000;
+const cookieParser = require('cookie-parser')
+
 
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.use("/api/auth", authRoute)
