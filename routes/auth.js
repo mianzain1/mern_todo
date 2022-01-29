@@ -39,8 +39,17 @@ router.post("/register", async (req, res) => {
             password: hashedPassword
         })
         //saving new user 
-        const savedUser = await newUser.save()
-        const { password, ...others } = newUser._doc
+        const savedUser = await newUser.save();
+
+        const payload = { userId: savedUser._id };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" })
+        res.cookie("access-token", token, {
+            expires: new Date(Date.now() + 7 * 24 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production"
+        });
+
+        const { password, ...others } = savedUser._doc
         res.status(200).json(others)
     } catch (error) {
         res.status(500).json("something is wrong" + error)
@@ -88,6 +97,18 @@ router.get("/current", requireAuth, async (req, res) => {
         return res.status(200).json("unAuthorized")
     }
     return res.json(req.user)
+})
+
+// @route: PUT /api/auth/logout
+// @description: logout user and clear the cookie
+// @access :Private
+router.put("/logout", requireAuth, async (req, res) => {
+    try {
+        res.clearCookie("access-token");
+        return res.status({ success: true });
+    } catch (error) {
+        res.status(500).json("something is wrong" + error)
+    }
 })
 
 
